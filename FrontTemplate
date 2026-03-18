@@ -1,0 +1,20 @@
+{{#Has-Homonyms}}<div style="position:fixed;bottom:2px;left:2px;font-size:28px;pointer-events:none;opacity:0.3;">✱</div>{{/Has-Homonyms}}
+<div style="display:grid;grid-template-columns:1fr auto;align-items:start;">
+<span class="front-horiz" style="text-align:left;font-family:'Yu Gothic', 'Hiragino Sans', sans-serif;font-size:47px;font-weight:300;max-width:100vw;">{{Vocabulary-Kanji}}</span>
+<span style="font-family:HiraMincho, 'Hiragino Mincho ProN';font-size:50px;writing-mode:vertical-rl;font-weight:normal;text-align:start;">{{Vocabulary-Kanji}}</span>
+</div>
+<br><br><br><br>
+
+<div style="display:grid;grid-template-columns:1fr auto;align-items:start;">
+<span class="front-horiz" style="text-align:left;font-family:'Yu Gothic', 'Hiragino Sans', sans-serif;font-size:28px;font-weight:300;max-width:100vw;">{{Expression}}</span>
+<span style="font-family:HiraMincho, 'Hiragino Mincho ProN';font-size:30px;writing-mode:vertical-rl;font-weight:normal;text-align:start;max-width:40vw;min-height:330px;line-height:1;" id="vexpr"><span class="front-expr">{{Expression}}</span>
+</span></div>
+
+<script>
+function sizeVExpr(){
+  var el=document.getElementById("vexpr");
+  if(el){el.style.height=(window.innerHeight-el.getBoundingClientRect().top-30)+"px";}
+}
+sizeVExpr();
+window.addEventListener("resize",sizeVExpr);
+</script>
