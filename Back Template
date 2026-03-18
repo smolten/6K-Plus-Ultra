@@ -1,0 +1,205 @@
+{{Vocabulary-Audio}}
+
+<a href="shirabelookup://search?w={{Vocabulary-Kanji}}">
+<span class="vocab-title">{{furigana:Vocabulary-Furigana}}</span>
+</a>
+<br>
+
+{{#Sentence-Audio}}{{Sentence-Audio}}{{/Sentence-Audio}}{{^Sentence-Audio}}<span style="opacity:0.3;font-size:20px;">✱</span> {{/Sentence-Audio}}
+<span class="reading-field">{{furigana:Reading}}</span>
+<br>
+{{#Definition-JP}}<span id="def-btn" class="toggle-btn" onclick="toggleDef();event.stopPropagation();event.preventDefault();">📕</span>{{/Definition-JP}}{{#Definition-JP}}
+<span id="def-content" class="def-content" style="display:none"> <span class="def-body" onclick="closeDef(event);" ontouchend="closeDef(event);">{{Definition-JP}}</span></span><br id="def-br" style="display:none">
+{{/Definition-JP}}
+{{#Stroke-Order}}<span id="stroke-btn" class="toggle-btn" onclick="toggleStroke();event.stopPropagation();event.preventDefault();">🈵</span>{{/Stroke-Order}}
+{{#Stroke-Order}}
+<div id="stroke-content" style="display:none" onclick="zoomImg(event);event.stopPropagation();event.preventDefault();">
+{{Stroke-Order}}
+</div>
+{{/Stroke-Order}}
+<br><br>
+
+{{Vocabulary-English}}
+<br><br>
+{{Sentence-English}}
+<br>
+<hr class="card-divider">
+<!-- == RK block == -->
+<script src="_rk_data.js"></script>
+<div id="rk-container"></div>
+<script>
+function toggleRK(id){
+  var w=document.getElementById(id+'-words');
+  var t=document.getElementById(id+'-toggle');
+  if(!w||!t)return;
+  if(w.style.display==='none'){
+    w.style.display='inline';
+    t.querySelector('.rk-arrow').textContent='\u25C0';
+    t.querySelector('.rk-count').style.display='none';
+  }else{
+    w.style.display='none';
+    t.querySelector('.rk-arrow').textContent='\u25B6';
+    t.querySelector('.rk-count').style.display='';
+  }
+}
+function renderRK(src){
+  var vocab='{{Vocabulary-Kanji}}';
+  var kanji=[];
+  var seen={};
+  for(var i=0;i<vocab.length;i++){
+    var cp=vocab.charCodeAt(i);
+    if((cp>=0x4E00&&cp<=0x9FFF)||(cp>=0x3400&&cp<=0x4DBF)){
+      if(!seen[vocab[i]]){seen[vocab[i]]=1;kanji.push(vocab[i]);}
+    }
+  }
+  var c=document.getElementById('rk-container');
+  if(!kanji.length||typeof RK==='undefined'){
+    c.textContent='No Related Kanji/Vocab';
+    return;
+  }
+  var html='';
+  var hasAny=false;
+  for(var i=0;i<kanji.length;i++){
+    var k=kanji[i];
+    var d=RK[k];
+    if(!d)continue;
+    hasAny=true;
+    var id='rk-'+i;
+    html+='<div class="rk-row" id="'+id+'">';
+    html+=d.l;
+    html+='<span class="rk-toggle" id="'+id+'-toggle" onclick="toggleRK(\''+id+'\');event.stopPropagation();event.preventDefault();">';
+    html+='<span class="rk-arrow">\u25B6</span><span class="rk-count">(+'+d.n+')</span>';
+    html+='</span>';
+    html+='<span class="rk-words" id="'+id+'-words" style="display:none">'+d.w+'</span>';
+    html+='</div>';
+  }
+  if(vocab.indexOf('\u3005')>=0){
+    html+='<div class="rk-row"><b><ruby>\u3005<rt>\u304A\u3069\u308A\u3058</rt></ruby></b>&emsp;\u8E0A\u308A\u5B57 \u2014 repeat the previous kanji</div>';
+  }
+  if(!hasAny){
+    c.textContent='No Related Kanji/Vocab';
+    return;
+  }
+  c.className='rk-field';
+  c.innerHTML=html;
+  var ws=c.querySelectorAll('.rk-w');
+  for(var j=0;j<ws.length;j++){
+    if(ws[j].getAttribute('data-w')===vocab) ws[j].classList.add('rk-self');
+  }
+  var allRows=c.querySelectorAll('.rk-row');
+  for(var r=0;r<allRows.length;r++){
+    var yomi=allRows[r].querySelector('.rk-yomi');
+    if(yomi){
+      yomi.style.maxWidth='';
+      var kun=yomi.querySelector('.rk-kun');
+      var on=yomi.querySelector('.rk-on');
+      if(kun)kun.style.display='inline-block';
+      if(on)on.style.display='inline-block';
+      var kunW=kun?kun.offsetWidth:0;
+      var onW=on?on.offsetWidth:0;
+      if(kun)kun.style.display='';
+      if(on)on.style.display='';
+      if(kunW>onW&&kunW>0){
+        yomi.style.maxWidth=Math.ceil(kunW/2)+'px'; // kunW/2 splits kun+nanori into max 2 lines
+        void yomi.offsetWidth; // force reflow
+        if(yomi.scrollWidth>yomi.offsetWidth){yomi.style.maxWidth=yomi.scrollWidth+'px';} // widen to fit content
+      }
+    }
+  }
+  c.addEventListener('click',function(e){
+    var m=e.target.closest('.jlpt-marker');
+    if(!m)return;
+    var row=m.closest('.rk-row');
+    if(!row)return;
+    var rid=row.id;
+    if(rid)toggleRK(rid);
+    e.stopPropagation();e.preventDefault();
+  });
+}
+if(typeof RK!=='undefined'){renderRK('ok');}
+else{var s=document.createElement('script');s.src='_rk_data.js';s.onload=function(){if(typeof RK!=='undefined')renderRK('ok');else document.getElementById('rk-container').textContent='RK not loaded';};s.onerror=function(){document.getElementById('rk-container').textContent='RK not loaded';};document.head.appendChild(s);}
+// Desktop: intercept shirabe links and open tangorin instead
+if(document.querySelector('.win,.desktop')||(/Windows/.test(navigator.userAgent)&&!/iPhone|iPad|iPod/.test(navigator.userAgent))){
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="shirabelookup://"]');
+    if(a){
+      e.preventDefault();e.stopPropagation();
+      var w=decodeURIComponent(a.href.replace('shirabelookup://search?w=',''));
+      window.open('https://tangorin.com/kanji?search='+encodeURIComponent(w)+'%20%23kanji');
+    }
+  });
+}
+</script>
+<!-- == End RK block == -->
+{{#Confused-With-ReadMe}}
+<hr class="rk-sep">
+<div class="rk-field"><span class="jlpt-marker cw-marker" style="margin:0 0.6em 0 0">?<br>?<br>?</span>{{Confused-With-ReadMe}}{{#Confused-With-EditMe}}<span class="jlpt-marker cw-marker" style="margin:0 0 0 0.3em;">?<br>?<br>?</span><span class="jlpt-marker cw-marker" style="margin:0 0.6em 0 0;text-align:center;">t<br>m<br>p</span><span class="cw-edit" id="cw-edit">{{Confused-With-EditMe}}</span>{{/Confused-With-EditMe}}</div>
+{{/Confused-With-ReadMe}}
+{{^Confused-With-ReadMe}}{{#Confused-With-EditMe}}
+<hr class="rk-sep">
+<div class="rk-field"><span class="jlpt-marker cw-marker" style="margin:0 0 0 0">?<br>?<br>?</span><span class="jlpt-marker cw-marker" style="margin:0 0.6em 0 0;text-align:center;">t<br>m<br>p</span>&ensp;<span class="cw-edit" id="cw-edit">{{Confused-With-EditMe}}</span></div>
+{{/Confused-With-EditMe}}{{/Confused-With-ReadMe}}
+<script>
+var cwe=document.getElementById("cw-edit");
+if(cwe){
+  var words=cwe.textContent.split(/[,\u3001\s]+/);
+  var html="";
+  for(var i=0;i<words.length;i++){
+    var w=words[i].trim();
+    if(!w)continue;
+    if(i>0)html+='<span class="rk-sp"> </span>';
+    html+='<a href="shirabelookup://search?w='+encodeURIComponent(w)+'">'+w+'</a>';
+  }
+  cwe.innerHTML=html;
+}
+</script>
+
+<script>
+function toggleDef(){
+  var c=document.getElementById('def-content');
+  var b=document.getElementById('def-br');
+  var btn=document.getElementById('def-btn');
+  if(!c)return;
+  if(c.style.display==='none'){
+    c.style.display='';if(b)b.style.display='';btn.textContent='\u{1f4d6}';
+  }else{
+    c.style.display='none';if(b)b.style.display='none';btn.textContent='\u{1f4d5}';
+  }
+}
+var _defTouchY=0;
+document.addEventListener('touchstart',function(e){_defTouchY=e.touches[0].clientY;},{passive:true});
+function closeDef(e){
+  var sel=window.getSelection();if(sel.toString()){sel.removeAllRanges();e.stopPropagation();e.preventDefault();return;}
+  if(e.type==='touchend'&&e.changedTouches&&Math.abs(e.changedTouches[0].clientY-_defTouchY)>5){e.stopPropagation();e.preventDefault();return;}
+  var c=document.getElementById('def-content');
+  var b=document.getElementById('def-br');
+  var btn=document.getElementById('def-btn');
+  if(c){c.style.display='none';if(b)b.style.display='none';btn.textContent='\u{1f4d5}';}
+  e.stopPropagation();e.preventDefault();
+}
+function toggleStroke(){
+  var c=document.getElementById('stroke-content');
+  var btn=document.getElementById('stroke-btn');
+  if(!c)return;
+  if(c.style.display==='none'){
+    c.style.display='';btn.textContent='\u2b1c';
+  }else{
+    c.style.display='none';btn.textContent='\u{1f235}';
+  }
+}
+function zoomImg(e){
+  if(e.target.tagName==='IMG'){e.target.classList.toggle('zoomed');}
+}
+
+// Desktop: intercept shirabe links and open tangorin instead
+if(document.body.classList.contains('win')){
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="shirabelookup://"]');
+    if(a){
+      e.preventDefault();e.stopPropagation();
+      var w=decodeURIComponent(a.href.replace('shirabelookup://search?w=',''));
+      window.open('https://tangorin.com/kanji?search='+encodeURIComponent(w)+'%20%23kanji');
+    }
+  });
+}
+</script>
