@@ -1,0 +1,154 @@
+
+/* smaller Audio button */
+.replay-button {
+    margin: unset;
+   display: unset;
+ }
+.replay-button svg {
+	width: unset;
+	height: 3rem;
+ }
+
+@font-face {
+  font-family: myfont;
+  src: url("_meiryol.ttf");
+}
+
+@font-face {
+  font-family: 'HiraMincho';
+  src: url("_HiraMinProW6.otf");
+}
+
+.card {
+ font-family: arial;
+ font-size: 20px;
+ text-align: center;
+ color: black;
+ background-color: cornflowerblue;
+}
+
+.hide-furigana rt {
+	display: none;
+}
+
+/* === Links === */
+a { text-decoration: none; color: inherit; }
+a:hover, a:active { text-decoration: underline; }
+
+/* === Night Mode === */
+.night_mode.card, .night_mode .card {
+	color: cornflowerblue;
+	background-color: #111111;
+}
+
+/* === Typography === */
+.vocab-title { font-family: HiraMincho, 'Hiragino Mincho ProN'; font-size: 36px; }
+.reading-field { font-family: HiraMincho, 'Hiragino Mincho ProN'; font-size: 30px; }
+/* Collapse inter-ruby spacing — WebKit adds a gap between adjacent
+   <ruby> elements (visible as phantom space before bolded vocab).
+   -2px eliminates the gap without causing overlap. */
+.reading-field ruby { margin: 0 -2px; }
+.card-divider { border: 0; border-top: 1px solid #ccc; margin: 12px 0; }
+
+.front-expr b { font-weight: inherit; }
+.front-horiz b { font-weight: inherit; }
+.reading-field b { font-weight: inherit; }
+.rk-field b { font-weight: inherit; }
+/* === Toggle buttons === */
+.toggle-btn { cursor: pointer; font-size: 36px; opacity: 0.7; }
+
+/* === Definition toggle === */
+.def-content { text-align: center; font-family: HiraMincho, 'Hiragino Mincho ProN'; font-size: 30px; }
+.def-body { cursor: pointer; display: inline; }
+
+/* === Stroke order === */
+.stroke-order { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.stroke-order img { width: 150px; height: 150px; background: #f5f5f0; border-radius: 8px; cursor: pointer; }
+/* Smaller SVGs on iOS to fit more per row */
+.iphone .stroke-order img { width: 120px; height: 120px; background: #f5f5f0; border-radius: 8px; }
+.stroke-order img.zoomed { width: min(600px, 100%); height: auto; }
+
+/* === Related Kanji === */
+.rk-field { font-family: HiraMincho, 'Hiragino Mincho ProN'; font-size: 30px; text-align: left; line-height: 2.0; word-spacing: 0.3em; }
+/* Same inter-ruby gap fix as .reading-field above */
+.rk-field ruby { margin: 0 -2px; }
+.rk-mature { color: #006400; }
+.rk-studying { color: #0645AD; }
+.rk-sep { border: 0; border-top: 1px dotted #ccc; margin: 4px 0; }
+/* On/kun readings stacked next to kanji leader */
+/* position:relative + bottom matches .jlpt-marker so 🔧 panel controls both */
+.rk-yomi { display: inline-block; font-size: 0.5em; line-height: 1.3; vertical-align: middle; text-align: left; margin: 0 0.2em; position: relative; bottom: 0.2em; }
+.iphone .rk-yomi { bottom: 0.4em; }
+.rk-on { }
+.rk-kun { }
+
+/* === JLPT markers === */
+.jlpt-marker {
+  display: inline-block;
+  line-height: 0.9em;
+  font-size: 0.55em;
+  vertical-align: middle;
+  margin: 0 0.4em 0 0;
+  position: relative;
+  bottom: 0.5em;
+}
+/* Horizontal vocab on iOS: don't over-bold */
+.iphone .front-horiz { font-weight: normal; }
+/* iOS horizontal: keep natural weight */
+.iphone .front-horiz { font-weight: normal; }
+/* iOS WebKit renders lower than desktop — nudge up to match */
+.iphone .jlpt-marker.m543 { bottom: 0.8em; }
+.iphone .jlpt-marker.m2,
+.iphone .jlpt-marker.m1,
+.iphone .jlpt-marker.cw-marker { bottom: 0.8em; }/* JLPT sections in Related-Kanji — margin replaces &emsp; to avoid phantom whitespace on wrap */
+.rk-sec { margin-left: 0.6em; }/* Spacer between Related-Kanji words — tune spacing here without regenerating cards */
+.rk-sp { display: inline-block; width: 0.5em; }/* Individual reading elements — spacing controlled by CSS */
+.rk-rd { margin: 0 0.05em; }
+.rk-rd:not(:last-child)::after { content: "·"; margin-left: 0.12em; }
+/* 3-line yomi: same iOS offset as jlpt-marker */
+.iphone .rk-yomi-tall { bottom: 0.8em; }
+
+/* == Related-Kanji styles == */
+.rk-mature { color: #006400; }
+.rk-studying { color: #0645AD; }
+/* Self-word dimming — uses color alpha instead of opacity to keep furigana <rt> visible on iOS */
+.rk-w.rk-self, .rk-w.rk-self a { color: rgba(0, 0, 0, 0.5); }
+.rk-w.rk-self .rk-mature, .rk-w.rk-self .rk-mature a { color: rgba(0, 100, 0, 0.5); }
+.rk-w.rk-self .rk-studying, .rk-w.rk-self .rk-studying a { color: rgba(6, 69, 173, 0.5); }
+/* Empty JLPT section X — dimmed like self */
+.rk-none { color: rgba(0, 0, 0, 0.35); margin-right: 0.3em; }
+.rk-sep { border: 0; border-top: 1px dotted #ccc; margin: 4px 0; }
+.rk-field b { font-weight: inherit; }
+.rk-field { font-family: HiraMincho, 'Hiragino Mincho ProN'; font-size: 30px; text-align: left; line-height: 2.0; }
+.rk-field ruby { margin: 0 -2px; }
+/* Spacer between RK words — contains real space for editor readability, CSS controls visual width */
+.rk-w { margin-right: 0.55em; }
+.rk-sp { font-size: 0; }
+/* Collapsible row per kanji */
+.rk-row { margin: 2px 0; }
+.rk-toggle { cursor: pointer; color: black; white-space: nowrap; }
+.rk-arrow { font-size: 0.6em; vertical-align: middle; position: relative; bottom: 0.1em; }
+.rk-count { font-size: 0.45em; color: rgba(0,0,0,0.5); vertical-align: middle; position: relative; bottom: 0.15em; }
+/* On/kun readings stacked next to kanji leader */
+.rk-yomi { display: inline-block; font-size: 0.5em; line-height: 1.3; vertical-align: middle; text-align: left; margin: 0 0.2em; position: relative; bottom: 0.2em; }
+.iphone .rk-yomi { bottom: 0.4em; }
+.rk-pipe { font-size: 80%; margin: 0 0.3em 0 -0.1em; font-weight: normal; }
+.rk-rd { margin: 0 0.05em; white-space: nowrap; }
+.rk-rd:not(:last-child)::after { content: " "; word-spacing: 0.18em; }
+.rk-on { }
+.rk-kun { }
+.jlpt-marker {
+  display: inline-block;
+  line-height: 0.9em;
+  font-size: 0.55em;
+  vertical-align: middle;
+  margin: 0 1em 0 0.3em;
+  position: relative;
+  bottom: 0.5em;
+  cursor: pointer;
+}
+/* AnkiMobile uses .iphone body class */
+.iphone .jlpt-marker.m543 { bottom: 0.8em; }
+.iphone .jlpt-marker.m2,
+.iphone .jlpt-marker.m1 { bottom: 0.8em; }
+/* == End Related-Kanji styles == */
